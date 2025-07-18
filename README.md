@@ -18,8 +18,6 @@
 ---
 
 ## 🛠️ Built With
-
-- **React + Vite**
 - **HTML5 / CSS3** (Plain CSS)
 - **JavaScript (ES6+)**
 - **[html2canvas](https://github.com/niklasvh/html2canvas)** for image export
