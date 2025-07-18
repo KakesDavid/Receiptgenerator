@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Naija Receipt Generator</title>
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="icon" type="image/png" href="https://img.icons8.com/ios-filled/50/27ae60/receipt.png" />
+</head>
+
+<body>
+    <main class="app" role="main">
+        <header class="app__header">
+            <div class="app__header-controls">
+                <button id="darkModeToggle" class="btn btn--ghost" aria-label="Toggle dark mode">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <button id="highContrastToggle" class="btn btn--ghost" aria-label="Toggle high contrast mode">
+                    <i class="fas fa-adjust"></i>
+                </button>
+            </div>
+            <h1><i class="fas fa-receipt icon--large"></i> Naija Receipt Generator</h1>
+            <p>Easy receipts for market traders</p>
+        </header>
+
+        <section class="section" aria-labelledby="business-setup">
+            <h2 id="business-setup">Business Setup</h2>
+            <div class="form__group">
+                <label for="businessName">Business Name</label>
+                <input type="text" id="businessName" placeholder="E.g. Mama Chi Bosco" required
+                    aria-describedby="businessNameError" />
+                <small class="error" id="businessNameError"></small>
+            </div>
+
+            <div class="form__group">
+                <label for="businessLogo">Business Logo</label>
+                <input type="file" id="businessLogo" accept="image/*" aria-describedby="businessLogoDesc" />
+                <small class="error" id="businessLogoError"></small>
+                <small id="businessLogoDesc" class="form__desc">Upload a small logo for your receipt (optional).</small>
+            </div>
+
+            <div class="form__group">
+                <label for="styleSelector">Receipt Style</label>
+                <select id="styleSelector" aria-describedby="style-desc">
+                    <option value="default">POS Slip</option>
+                    <option value="modern">Modern Invoice</option>
+                    <option value="market">Market Style</option>
+                </select>
+                <small id="style-desc" class="form__hint">Pick a style that matches your business.</small>
+            </div>
+
+            <div class="form__group">
+                <label for="primaryColor">Primary Color</label>
+                <input type="color" id="primaryColor" value="#2ecc71" aria-describedby="primaryColorDesc" />
+                <small id="primaryColorDesc" class="form__hint">Choose a color for your receipt.</small>
+            </div>
+
+            <div class="form__group">
+                <label><input type="checkbox" id="addWatermark" /> Add ₦ PAID Watermark</label>
+            </div>
+        </section>
+
+        <section class="section" aria-labelledby="customer-items">
+            <h2 id="customer-items">Customer & Items</h2>
+            <div class="form__group">
+                <label for="customerName">Customer Name</label>
+                <input type="text" id="customerName" placeholder="E.g. Madam Grace"
+                    aria-describedby="customerNameDesc" />
+                <small id="customerNameDesc" class="form__hint">Enter the customer's name (optional).</small>
+            </div>
+
+            <div class="form__group">
+                <label for="discount">Discount</label>
+                <div style="display: flex; gap: 0.5rem;">
+                    <input type="number" id="discount" placeholder="0" min="0" aria-describedby="discountError" />
+                    <select id="discountType" aria-label="Discount Type">
+                        <option value="percentage">%</option>
+                        <option value="fixed">₦</option>
+                    </select>
+                </div>
+                <small class="error" id="discountError"></small>
+            </div>
+
+            <div id="itemRows"></div>
+
+            <div class="form__actions">
+                <button id="addItem" class="btn btn--secondary"><i class="fas fa-plus"></i> Add Item</button>
+                <button id="speakItem" class="btn btn--voice"><i class="fas fa-microphone"></i> Speak Item</button>
+            </div>
+        </section>
+
+        <section class="section">
+            <button id="generateReceipt" class="btn btn--primary"><i class="fas fa-receipt"></i> Generate
+                Receipt</button>
+        </section>
+
+        <section class="section" aria-labelledby="receipt-preview">
+            <h2 id="receipt-preview">Receipt Preview</h2>
+            <div id="receiptOutput" class="receipt" aria-live="polite"></div>
+            <div id="receiptActions" class="form__actions" style="display: none;">
+                <button id="copyText" class="btn btn--ghost"><i class="fas fa-copy"></i> Copy Text</button>
+                <button id="sendWhatsApp" class="btn btn--whatsapp"><i class="fas fa-share"></i> Send via
+                    WhatsApp</button>
+                <button id="printReceipt" class="btn btn--print"><i class="fas fa-print"></i> Print Receipt</button>
+                <button id="saveReceipt" class="btn btn--save"><i class="fas fa-save"></i> Save Receipt</button>
+            </div>
+            <div id="dailyStats" class="stats" aria-live="polite"></div>
+        </section>
+
+        <section class="section" aria-labelledby="past-receipts">
+            <h2 id="past-receipts">Past Receipts</h2>
+            <div id="pastReceipts" class="receipt-list"></div>
+        </section>
+
+        <footer class="app__footer">
+            <a href="https://web.facebook.com/kakes.david.2025">thanks for visitng my project i apperciate the time you spent here</a>
+        </footer>
+    </main>
+
+    <div id="onboardingModal" class="modal" style="display: none;">
+        <div class="modal__content">
+            <h3>Welcome to Naija Receipt Generator!</h3>
+            <p>Create receipts easily:</p>
+            <ul>
+                <li>Enter your business name and logo.</li>
+                <li>Add items by typing or using voice (e.g., "Rice 1 bag 500" or "Egg 2 units 50").</li>
+                <li>Choose a receipt style and generate!</li>
+                <li>Share via WhatsApp, print or save to phone.</li>
+            </ul>
+            <button id="closeOnboarding" class="btn btn--primary">Got It!!</button>
+        </div>
+    </div>
+
+    <div id="shareModal" class="modal" style="display: none;">
+        <div class="modal__content">
+            <h3>Share with Your Friends!</h3>
+            <p>Love Naija Receipt Generator? Invite your friends to create awesome receipts for free!</p>
+            <button id="shareButton" class="btn btn--primary"><i class="fas fa-share"></i> Share</button>
+            <div class="form__group" style="margin-top: 1rem;">
+                <label><input type="checkbox" id="dontShowAgain" /> Don't show this again</label>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast" style="display: none;"></div>
+
+    <datalist id="itemSuggestions"></datalist>
+
+    <script src="js/app.js"></script>
+</body>
+
+</html>
